@@ -55,7 +55,15 @@ class Simulation:
             alive_sheeps)
         self.was_sheep_eaten = not self.targeted_sheep.is_alive
 
-    def start_simulation(self, pause_between_rounds: bool):
+    def start_simulation(self, pause_between_rounds: bool, output_dir: str, log_level: str):
+        alive_file = output_dir + '/alive.csv'
+        positions_file = output_dir + '/pos.json'
+        log_file = output_dir + '/chase.log'
+
+        print(alive_file)
+        print(positions_file)
+        print(log_file)
+
         while self.current_round < self.rounds_number:
             print(self)
             self.was_sheep_eaten = False
@@ -64,11 +72,11 @@ class Simulation:
                 input()
 
             self.next_round()
-            self.save_number_of_alive_sheeps_to_file('alive.csv')
-            self.save_positions_to_file('pos.json')
+            self.save_number_of_alive_sheeps_to_file(alive_file)
+            self.save_positions_to_file(positions_file)
         print(self)
-        self.save_number_of_alive_sheeps_to_file('alive.csv')
-        self.save_positions_to_file('pos.json')
+        self.save_number_of_alive_sheeps_to_file(alive_file)
+        self.save_positions_to_file(positions_file)
         self.was_sheep_eaten = False
         self.targeted_sheep = None
 

@@ -41,10 +41,36 @@ def load_config(config_file_path: str = ""):
     return InitPosLimit, SheepMoveDist, WolfMoveDist
 
 
+parser = argparse.ArgumentParser(
+    description='Simulation of sheep and wolf movement')
+parser.add_argument(
+    '-c', '--config', metavar="FILE", help='configuration file path', default="")
+parser.add_argument('-d', '--dir', metavar="DIR",
+                    help='output directory for pos.json, alive.json and optionally chase.log', default=".")
+parser.add_argument('-l', '--log', metavar="LEVEL",
+                    help='log level [DEBUG, INFO, WARNING, ERROR or CRITICAL]', default="")
+parser.add_argument('-r', '--rounds', metavar="NUM",
+                    type=int, help='number of rounds', default=50)
+parser.add_argument('-s', '--sheep', metavar="NUM", type=int,
+                    help='number of sheeps', default=15)
+parser.add_argument('-w', '--wait', action='store_true',
+                    help='wait for user input after each round')
+
+
 if __name__ == '__main__':
-    rounds = 50
-    sheeps = 15
-    InitPosLimit, SheepMoveDist, WolfMoveDist = load_config()
-    simulation = Simulation(rounds, sheeps, InitPosLimit,
+    args = parser.parse_args()
+    ROUNDS = args.rounds
+    SHEEPS = args.sheep
+    WAIT = args.wait
+    CONFIG_FILE = args.config
+    LOG_LEVEL = args.log
+    OUTPUT_DIR = args.dir
+
+    LOG_LEVELS = ["", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+    if LOG_LEVEL not in LOG_LEVELS:
+        raise Exception('Invalid log level')
+
+    InitPosLimit, SheepMoveDist, WolfMoveDist = load_config(CONFIG_FILE)
+    simulation = Simulation(ROUNDS, SHEEPS, InitPosLimit,
                             SheepMoveDist, WolfMoveDist)
-    simulation.start_simulation(False)
+    simulation.start_simulation(WAIT, OUTPUT_DIR, LOG_LEVEL)
