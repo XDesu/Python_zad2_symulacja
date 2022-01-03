@@ -19,6 +19,10 @@ class Wolf:
         logger.info(f"Wolf created in position x:{self.x} y:{self.y}")
         pass
 
+    def __str__(self) -> str:
+        to_return = f"Wolf at position x:{self.x} y:{self.y}"
+        return to_return
+
     def get_position(self) -> tuple[float, float]:
         '''returns a current position of the wolf'''
         x = round(self.x, 3)
