@@ -25,6 +25,10 @@ class Sheep:
         to_return = f"Sheep {self.id} at position x:{self.x} y:{self.y} (alive: {self.is_alive})"
         return to_return
 
+    def __repr__(self) -> str:
+        to_return = f"Sheep(id:{self.id}, x:{self.x}, y:{self.y}, move_dist:{self.move_dist}, is_alive:{self.is_alive})"
+        return to_return
+
     def get_position(self) -> tuple[float, float] | None:
         if self.is_alive:
             x = round(self.x, 3)

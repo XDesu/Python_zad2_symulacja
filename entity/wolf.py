@@ -23,6 +23,10 @@ class Wolf:
         to_return = f"Wolf at position x:{self.x} y:{self.y}"
         return to_return
 
+    def __repr__(self) -> str:
+        to_return = f"Wolf(x:{self.x}, y:{self.y}, move_dist:{self.move_dist})"
+        return to_return
+
     def get_position(self) -> tuple[float, float]:
         '''returns a current position of the wolf'''
         x = round(self.x, 3)
@@ -39,7 +43,8 @@ class Wolf:
 
         distance = sqrt((sx - wx)**2 + (sy - wy)**2)
 
-        logger.debug(f"Distance from wolf to sheep {{{sheep}}} is {distance}")
+        logger.debug(
+            f"Distance from wolf to sheep {sheep.__repr__()} is {distance}")
         return distance
 
     def move(self, sheeps: list[Sheep]) -> Sheep:
@@ -58,7 +63,7 @@ class Wolf:
                 closest_distance = distance
 
         logger.info(
-            f"Closest sheep is {{{closest_sheep}}} with distance {closest_distance}")
+            f"Closest sheep is {closest_sheep.__repr__()} with distance {closest_distance}")
 
         sx, sy = closest_sheep.get_position()
         if closest_distance <= self.move_dist:
@@ -66,7 +71,7 @@ class Wolf:
             self.y = sy
             closest_sheep.is_alive = False
             logger.info(
-                f"Wolf moved to sheep {{{closest_sheep}}} and killed it")
+                f"Wolf moved to sheep {closest_sheep.__repr__()} and killed it")
             return closest_sheep
 
         # calculate unit vector

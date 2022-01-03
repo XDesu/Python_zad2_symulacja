@@ -49,7 +49,7 @@ def setup_logging(log_level: str, log_file_path: str):
             return
 
     logging.basicConfig(filename=log_file_path,
-                        level=log_level, format=logging_format, datefmt=date_format)
+                        level=log_level, format=logging_format, datefmt=date_format, filemode='w')
 
 
 parser = argparse.ArgumentParser(
@@ -77,11 +77,11 @@ if __name__ == '__main__':
     LOG_LEVEL = args.log
     OUTPUT_DIR = args.dir
 
-    LOG_LEVEL = "DEBUG"
+    LOG_LEVEL = "INFO"
 
     InitPosLimit, SheepMoveDist, WolfMoveDist = load_config(CONFIG_FILE)
     setup_logging(LOG_LEVEL, OUTPUT_DIR + '/chase.log')
 
     simulation = Simulation(ROUNDS, SHEEPS, InitPosLimit,
                             SheepMoveDist, WolfMoveDist)
-    simulation.start_simulation(WAIT, OUTPUT_DIR, LOG_LEVEL)
+    simulation.start_simulation(WAIT, OUTPUT_DIR)
