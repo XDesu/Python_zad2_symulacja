@@ -19,13 +19,13 @@ class Sheep:
 
         logger.info(
             f"Sheep #{self.id} created in position x:{self.x} y:{self.y}")
-        pass
+        return
 
     def __str__(self) -> str:
         to_return = f"Sheep {self.id} at position x:{self.x} y:{self.y} (alive: {self.is_alive})"
         return to_return
 
-    def get_position(self):
+    def get_position(self) -> tuple[float, float] | None:
         if self.is_alive:
             x = round(self.x, 3)
             y = round(self.y, 3)

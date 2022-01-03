@@ -17,7 +17,7 @@ class Wolf:
         self.move_dist = wolf_move_dist
 
         logger.info(f"Wolf created in position x:{self.x} y:{self.y}")
-        pass
+        return
 
     def __str__(self) -> str:
         to_return = f"Wolf at position x:{self.x} y:{self.y}"
