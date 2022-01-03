@@ -14,6 +14,10 @@ class Sheep:
         self.id = indentation_number
         pass
 
+    def __str__(self) -> str:
+        to_return = f"Sheep {self.id} at position x:{self.x} y:{self.y}"
+        return to_return
+
     def get_position(self):
         if self.is_alive:
             return round(self.x, 3), round(self.y, 3)

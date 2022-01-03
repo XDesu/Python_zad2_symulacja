@@ -2,6 +2,7 @@ import configparser
 import argparse
 
 from entity.simulation import Simulation
+import logging
 
 
 def load_config(config_file_path: str = ""):
@@ -29,6 +30,28 @@ def load_config(config_file_path: str = ""):
     return InitPosLimit, SheepMoveDist, WolfMoveDist
 
 
+def setup_logging(log_level: str, log_file_path: str):
+    logging_format = '%(asctime)s %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s'
+    date_format = '%Y-%m-%d:%H:%M:%S'
+
+    match log_level:
+        case 'DEBUG':
+            log_level = logging.DEBUG
+        case 'INFO':
+            log_level = logging.INFO
+        case 'WARNING':
+            log_level = logging.WARNING
+        case 'ERROR':
+            log_level = logging.ERROR
+        case 'CRITICAL':
+            log_level = logging.CRITICAL
+        case _:
+            return
+
+    logging.basicConfig(filename=log_file_path,
+                        level=log_level, format=logging_format, datefmt=date_format)
+
+
 parser = argparse.ArgumentParser(
     description='Simulation of sheep and wolf movement')
 parser.add_argument(
@@ -54,11 +77,11 @@ if __name__ == '__main__':
     LOG_LEVEL = args.log
     OUTPUT_DIR = args.dir
 
-    LOG_LEVELS = ["", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-    if LOG_LEVEL not in LOG_LEVELS:
-        raise Exception('Invalid log level')
+    LOG_LEVEL = "DEBUG"
 
     InitPosLimit, SheepMoveDist, WolfMoveDist = load_config(CONFIG_FILE)
+    setup_logging(LOG_LEVEL, OUTPUT_DIR + '/chase.log')
+
     simulation = Simulation(ROUNDS, SHEEPS, InitPosLimit,
                             SheepMoveDist, WolfMoveDist)
     simulation.start_simulation(WAIT, OUTPUT_DIR, LOG_LEVEL)
