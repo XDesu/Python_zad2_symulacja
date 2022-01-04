@@ -1,15 +1,32 @@
 import logging
 
-from math import sqrt
+from math import dist
+from sys import maxsize
 from entity.sheep import Sheep
 
 logger = logging.getLogger(__name__)
 
 
+def get_unit_vector_from_p1_to_p2(p1: tuple[float, float], p2: tuple[float, float]) -> tuple[float, float]:
+    """
+    zwróć wektor jednostkowy z p1 do p2
+    """
+    logger.debug(f"get_unit_vector_from_p1_to_p2(p1:{p1}, p2:{p2})")
+
+    len = dist(p1, p2)
+    if len == 0:
+        return 0, 0
+    p3 = (p2[0] - p1[0], p2[1] - p1[1])
+    p3 = (p3[0] / len, p3[1] / len)
+
+    logger.debug(f"returns p3:{p3}")
+    return p3
+
+
 class Wolf:
 
     def __init__(self, wolf_move_dist: float) -> None:
-        '''Creates wolf with position at (0,0)'''
+        '''stwórz wilka na pozycji (0,0)'''
         logger.debug(f"Creating wolf with move distance {wolf_move_dist}")
 
         self.x = 0.0
@@ -28,34 +45,49 @@ class Wolf:
         return to_return
 
     def get_position(self) -> tuple[float, float]:
-        '''returns a current position of the wolf'''
+        '''zwróć aktualną pozycję wilka'''
         x = round(self.x, 3)
         y = round(self.y, 3)
         logger.debug(f"returns x:{x} y:{y}")
         return x, y
 
     def calc_distance_from_sheep(self, sheep: Sheep) -> float:
-        '''returns the distance between the wolf and a given sheep'''
+        '''zwróć odległość pomiędzy wilkiem a wskazaną owcą'''
         logger.debug(f"Calculating distance from sheep {{{sheep}}}")
 
-        wx, wy = self.x, self.y
-        sx, sy = sheep.get_position()
+        # jeżeli martwa owca znajduje się w zasięgu wilka
+        # to zwróć "nieskończoną" odległość
+        if sheep.get_position() == None:
+            logger.error(f"Dead sheep {sheep} in wolf distance calculation")
+            return maxsize
 
-        distance = sqrt((sx - wx)**2 + (sy - wy)**2)
+        distance = dist(self.get_position(), sheep.get_position())
+
+        # wx, wy = self.x, self.y
+        # sx, sy = sheep.get_position()
+        # distance = sqrt((sx - wx)**2 + (sy - wy)**2)
 
         logger.debug(
             f"Distance from wolf to sheep {sheep.__repr__()} is {distance}")
         return distance
 
+    def kill_sheep(self, sheep: Sheep) -> Sheep:
+        '''zabij owcę'''
+        logger.debug(f"Killing sheep {sheep.__repr__()}")
+        sheep.is_alive = False
+        return sheep
+
     def move(self, sheeps: list[Sheep]) -> Sheep:
         '''
-        moves towards the closest sheep.
-        return targeted sheep
+        porusz wilka w kierunku najbliższej owcy.
+        zjedz owcę, gdy znajduje się w zasięgu wilka.
+        zwróć namierzoną owcę
         '''
         logger.debug(f"Moving wolf towards closest sheep. Sheeps: {sheeps}")
 
         closest_sheep = sheeps[0]
         closest_distance = self.calc_distance_from_sheep(closest_sheep)
+
         for sheep in sheeps:
             distance = self.calc_distance_from_sheep(sheep)
             if distance < closest_distance:
@@ -65,24 +97,21 @@ class Wolf:
         logger.info(
             f"Closest sheep is {closest_sheep.__repr__()} with distance {closest_distance}")
 
-        sx, sy = closest_sheep.get_position()
+        s_pos = closest_sheep.get_position()
+        move_to = (0, 0)
+        # jeżeli, owca znajduje się w zasięgu wilka to ją zjedz.
         if closest_distance <= self.move_dist:
-            self.x = sx
-            self.y = sy
-            closest_sheep.is_alive = False
-            logger.info(
-                f"Wolf moved to sheep {closest_sheep.__repr__()} and killed it")
-            return closest_sheep
+            move_to = s_pos
+            self.kill_sheep(closest_sheep)
+        else:
+            move_to = get_unit_vector_from_p1_to_p2((self.x, self.y), s_pos)
+            move_to = (move_to[0] * self.move_dist,
+                       move_to[1] * self.move_dist)
+            move_to = (self.x + move_to[0], self.y + move_to[1])
 
-        # calculate unit vector
-        s_length = sqrt(sx**2 + sy**2)
-        sx_unit, sy_unit = sx/s_length, sy/s_length
-        # set unit vector towards sheep from wolf
-        sx_unit *= -1 if abs(sx) - abs(self.x) < 0 else 1
-        sy_unit *= -1 if abs(sy) - abs(self.y) < 0 else 1
-        # move wolf in that direction
-        self.x += self.move_dist * sx_unit
-        self.y += self.move_dist * sy_unit
+        # przemieść wilka
+        self.x = move_to[0]
+        self.y = move_to[1]
 
         logger.info(f"Wolf moved to x:{self.x} y:{self.y}")
         return closest_sheep

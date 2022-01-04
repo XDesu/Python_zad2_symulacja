@@ -7,7 +7,10 @@ logger = logging.getLogger(__name__)
 class Sheep:
 
     def __init__(self, indentification_number: int, init_pos_limit: float, sheep_move_dist: float) -> None:
-        '''Creates a Sheep with random position between -init_pos_limit and init_pos_limit'''
+        '''
+        stwórz owcę w losowej pozycji miedzy \ 
+        -init_pos_limit i init_pos_limit
+        '''
         logger.debug(
             f"Creating sheep with id {indentification_number}, move distance {sheep_move_dist} and init pos limit {init_pos_limit}")
 
@@ -30,6 +33,7 @@ class Sheep:
         return to_return
 
     def get_position(self) -> tuple[float, float] | None:
+        '''zwróć aktualną pozycję owcy'''
         if self.is_alive:
             x = round(self.x, 3)
             y = round(self.y, 3)
@@ -39,9 +43,13 @@ class Sheep:
         return None
 
     def move(self) -> None:
-        '''Moves sheep in random direction with distance sheep_move_dist'''
+        '''
+        zmien położenie owcy w losowym kierunku \
+        o dystans sheep_move_dist
+        '''
         logger.debug(f"Moving sheep #{self.id} from x:{self.x} y:{self.y}")
         directions = ["N", "S", "E", "W"]
+
         match random.choice(directions):
             case "N":
                 self.y += self.move_dist
@@ -51,5 +59,6 @@ class Sheep:
                 self.x += self.move_dist
             case "W":
                 self.x -= self.move_dist
+
         logger.info(f"Sheep #{self.id} moved to x:{self.x} y:{self.y}")
         return
