@@ -25,3 +25,13 @@ Autorzy:
 
 ## uruchomienie
 > `py -m chase <args>`
+
+sugerowana kolejność uruchamiania
+1. build
+2. utwórz wirtualne środowisko
+3. wejdź
+4. zainstaluj pipem pakiet
+5. uruchom
+6. wyjdź
+
+można użyć `-h`, żeby sprawdzić dostępne opcje
