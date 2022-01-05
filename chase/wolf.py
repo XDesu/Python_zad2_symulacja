@@ -2,7 +2,7 @@ import logging
 
 from math import dist
 from sys import maxsize
-from entity.sheep import Sheep
+from chase.sheep import Sheep
 
 logger = logging.getLogger(__name__)
 

@@ -2,7 +2,7 @@ import configparser
 import argparse
 import os
 
-from entity.simulation import Simulation
+from chase.simulation import Simulation
 import logging
 
 

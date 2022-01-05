@@ -1,5 +1,5 @@
-from entity.wolf import Wolf
-from entity.sheep import Sheep
+from chase.wolf import Wolf
+from chase.sheep import Sheep
 import json
 import csv
 import logging
